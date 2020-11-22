@@ -1,0 +1,807 @@
+import ballerina/io;
+import ballerina/crypto;
+import ballerina/math;
+import ballerina/lang.'int;
+
+
+int y = -1;
+
+
+
+//**********************************************************************************
+
+//**************************************************end of main()***********************
+
+
+
+public function versioner(string latestVersion) returns string{
+
+int yy = 0; int powerCount = 0; 
+int kk = 0; int k = 0; int dig = 0;
+string d = ""; int repr = 0; 
+string newLastPart = "";  
+string newestVersion = ""; 
+string currentVersion = ""; int maxPow = 0; string lastpart = "";
+string[] digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+int[] intDigits = [0, 1, 2, 3, 4, 5, 6, 7, 8, 9];
+
+currentVersion = latestVersion;
+
+while(yy<4){
+    powerCount = 0; kk = 0; dig = 0; d = ""; 
+    repr = 0; yy = 0; k = 0; newestVersion = "";
+
+     lastpart = currentVersion.substring(  <int>currentVersion.lastIndexOf(".")+1  ,  currentVersion.length()  );
+     maxPow = lastpart.length()-1;
+    
+       while(k < lastpart.length()){   
+        d = lastpart.substring(k, k+1);
+      
+       while(kk < 10){
+    
+        if(d == digits[kk]){
+           dig = intDigits[kk];
+           repr = repr + dig*<int>(math:pow(10.0, <float>(maxPow-powerCount)));
+           powerCount = powerCount + 1;
+           break;
+        }
+         kk = kk + 1;
+     }
+      kk = 0;
+      k = k + 1;
+    }
+    
+    powerCount = 0;
+    repr = repr + 1;
+    //increment version number
+    newLastPart = repr.toString();
+    //string 
+    newestVersion = currentVersion.substring(0, <int>currentVersion.lastIndexOf(".")).concat(".", newLastPart);
+    yy = yy +1;
+     
+}
+//string newestVersion2 = newestVersion;
+return newestVersion;
+}  
+
+
+
+
+
+public function cryptofy2(string plaintext) returns string{
+
+   byte[] bytePlaintext = plaintext.toBytes();
+   byte[] byteCiphertext = crypto:hashMd5(bytePlaintext);
+
+   string stringCiphertext = byteCiphertext.toBase16();
+   //io:println("Result: ", stringCiphertext);
+   //io:println("Result: ", cryptofy(plaintext));
+   return stringCiphertext;
+
+}
+
+
+
+
+public function cryptofy(string plaintext) returns string?{
+    
+   byte[] bytePlaintext = plaintext.toBytes();
+   byte[] byteCiphertext = crypto:hashMd5(bytePlaintext);
+   string stringCiphertext = byteCiphertext.toBase16();
+   io:println("Result: ", cryptofy(plaintext));
+   return stringCiphertext;
+}
+
+
+
+//**********************************records********************************************
+
+
+public type Artist record{
+string name = "unspecified";
+//we'll make these optional later
+string membership = "unspecified";
+// = "Yes";
+};
+
+public type Song record{
+string title = "unspecified";
+string genre = "unspecified";
+string platform = "unspecified";
+//or maybe u could use that optional fields thing of ballerina
+//im pretty sure title cannot be optional, it's pretty important
+};
+
+public type Music record {
+ string date;
+ Artist[] artist;
+ string band = "unspecified";
+ Song[] song;
+ string theVersion;
+ string recordNumber;
+ string recordKey;
+};
+
+
+
+
+
+//**************************** incrementer************************************************
+
+public function incr(int x, int adder) returns int{
+y = x + adder;
+return y;
+}
+
+//******************************end of incrementer****************************************
+
+
+//*********************************createRecord()********************************8
+
+public function createRecord(){
+
+int attributeCounter = 1;
+
+string[] attributes = ["Date :", "Name: ", "Member (true/false): ", "Band: ", "Title: ", "Genre: ", "Platform: "];
+io:println("Creating record... \nPlease enter values carefully. VERY carefully. No pressure. ");
+
+Artist[] artist2  = [];
+Song[] song2 = [];
+
+Artist[] artist1 = [{name: " ", membership: " "}];
+Song[] song0 = [{title: " ", genre: " ", platform: " "}];
+
+Music lovelyTune = {date: "", artist: artist1, band: "", song: song0, theVersion: "", recordNumber: "0", recordKey: "xxxx"};
+//string wheh = "iiu";
+//lovelyTune.recordKey = cryptofy(wheh);
+
+io:print("Date: ");
+lovelyTune.date = io:readln("");
+
+
+
+string entries = io:readln("Number of artists on this song: ");
+int|error noOfEntries1 = 'int:fromString(entries); 
+
+//if(noOfEntries1 is int){  //    io:println(); //} //else{ //    noOfEntries1 = 1; //} //don't forget to turn this to an integer
+int i1 = 0;
+
+
+
+
+//int|error noOfEntries2 = noOfEntries1; //sketch... this whole string to int conversion, ballerina done f'd up bad
+
+//int noOfEntries1 = 2;
+
+string[] artistlist = [];
+y = -1;
+
+
+while(i1 < (<int>noOfEntries1)){
+//while(i1 < (<int>noOfEntries1) + 1){         //this is for when it starts with i1 = 1;
+Artist beyonce = {name: " ", membership: " "};
+
+ io:print("\nName: ");
+ beyonce.name = io:readln("");
+ artistlist[incr(y, 1)] = beyonce.name;
+
+ io:print("Member (Yes/No): ");
+ beyonce.membership = io:readln("");
+ artistlist[incr(y, 1)] = beyonce.membership;
+
+ artist2[i1] = beyonce;
+ //io:println(artist2);
+
+//artist2.length()/2
+
+i1 = i1 + 1;
+}
+
+lovelyTune.artist = artist2;
+//int artistLength = artist2.length();
+
+//io:println("\n\nLovelyTune.artist: \n\n");  //io:println(lovelyTune.artist);
+
+io:print("\nBand: ");  
+lovelyTune.band = io:readln("");
+
+string entries2 = io:readln("Number of songs here: ");
+int|error noOfEntries = 'int:fromString(entries2); 
+int i2 = 0;
+
+//string entries = io:readln("How many artists are on this song? ");
+//int|error noOfEntries1 = 'int:fromString(entries); 
+
+//string entries = io:readln("How many artists are on this song? ");  //int|error noOfEntries = 'int:fromString(entries2);
+//for now, lets set the numbers we want to receive from the user (in string form)  // to defualts until we can figure this out
+
+//int noOfEntries = 2;
+
+string[] songlist = [];
+y = -1;
+
+
+while(i2 < (<int>noOfEntries)){
+//while(i2 < (<int>noOfEntries) + 1){       //this is for when it starts with i2 = 0;
+Song song1 = {title: " ", genre: " ", platform: " "};
+
+
+io:print("\nTitle: ");
+song1.title = io:readln("");
+songlist[incr(y, 1)] = song1.title;
+
+io:print("Genre: ");
+song1.genre = io:readln("");
+songlist[incr(y, 1)] = song1.genre;
+
+io:print("Platform: ");
+song1.platform = io:readln("");
+songlist[incr(y, 1)] = song1.platform;
+
+song2[i2] = song1;
+
+i2 = i2 + 1;
+}
+
+lovelyTune.song = song2;
+//int songLength = song2.length();
+
+
+io:println("\n\nRecord Representation: \n\n");
+io:println(lovelyTune);
+//lovelyTune.version = 
+//updateIndex(lovelyTune);
+
+    json|error j = json.constructFrom(lovelyTune);
+    if (j is json) {
+
+        io:println("\n\nJSON Representation:\n\n");
+        io:println(j.toJsonString());
+       io:println("\n\nPres Eni Ki Tu Kontinew: \n\nArtist List: \n\n", artistlist);
+       io:println("\n\nSonglist: \n\n", songlist);
+       io:println("\n\n");
+        
+       //lovelyTune.recordNumber =  
+
+       //string wheh = "iiu";
+      lovelyTune.recordKey = cryptofy2(j.toJsonString());
+      //I hope this "does the trick"
+
+    }
+
+//Artist[] namess = lovelyTune.artist;
+//string [] attributesArray = [lovelyTune.date, lovelyTune.name, music2.membership, music2.band, music2.title, music2.genre, music2.platform, music2.theVersion, music2.recordNumber];
+//
+string decider = "create";
+updateIndex(lovelyTune, decider);
+
+}
+
+//******************************** end of createRecord() ********************************************
+
+
+
+
+public function randomNoString() returns string{
+
+    string[] digits = ["0", "1", "2", "3", "4", "5", "6", "7", "8", "9"];
+    //could add more characters or strings for more, but for original purpose, this is cool
+
+     int noOfDigits = 0;
+     int chosenDigit = 0;
+    
+     noOfDigits = <int>(math:randomInRange(1, 10));
+    //number of digits
+
+     int kk = 1;
+     string num = "";
+
+    while(kk < noOfDigits+1){
+    chosenDigit = <int>(math:randomInRange(1, 10)); 
+    
+     num = num.concat(digits[chosenDigit]);
+     //io: print("\nIteration ", kk, ": ",num);
+     kk = kk + 1;
+    }
+     
+     //io:println("Number: ", num);
+     return num;
+
+}
+
+
+
+
+
+
+
+
+
+public function updateIndex(Music music2, string decider) {
+    
+string indexFile = "Dates{  22/04/2012[2.0, 7.0, 9.0]; 12/11/2018[5.0, 17.0, 23.0];1}, Names{  young thug[9.0, 3.0, 123.0]; lil wayne[34.0, 78.0, 92.0]; eminem[2.0, 23.0, 9.0];2}, Member{  yes[3.0, 9.0, 17.0, 34.0, 78.0, 5.0]; no[2.0, 7.0, 9.0, 23.0, 123.0];3}, Band{  momford and sons[3.0, 123.0, 17.0, 78.0]; young money[17.0, 5.0, 23.0]; shady records[2.0, 23.0, 9.0];4}, Title{  baby[7.0, 17.0, 78.0, 23.0]; love[123.0, 19.0, 2.0, 3.0];5}, Genre{  hip hop[17.0, 92.0, 23.0, 124.0]; pop[3.0, 17.0, 19.0];6}, Platform{  deezer[23.0, 78.0, 2.0, 9.0]; youtube[17.0, 9.0, 5.0];7}";
+string originalIndexFile = indexFile;
+
+ //come back here if errors   
+//"Dates{22/04/2012[2., 7., 9.]; 12/11/2018[5., 17., 23.];1}, Names{young thug[9., 3., 123.]; lil wayne[34., 78., 92.]; eminem[2., 23., 9.];2}, Member{yes[3., 9., 17., 34., 78., 5.]; no[2., 7., 9., 23., 123.];3}, Band{momford and sons[3., 123., 17., 78.,]; young money[17., 5., 23.]; shady records[2., 23., 9.];4}, Title{baby[7., 17., 78., 23.]; love[123., 19., 2., 3.];5}, Genre{hip hop[17., 92., 23., 124.]; pop[3., 17., 19.];6}, Platform{deezer[23., 78., 2., 9.]; youtube[17., 9., 5.];7}";
+//"Dates{22/04/2012[2, 7, 9]; 12/11/2018[5, 17, 23];1}, Names{young thug[9, 3, 123]; lil wayne[34, 78, 92]; eminem[2, 23, 9];2}, Member{yes[3, 9, 17, 34, 78, 5]; no[2, 7, 9, 23, 123];3}, Band{momford and sons[3, 123, 17, 78]; young money[17, 5, 23]; shady records[2, 23, 9];4}, Title{baby[ 7, 17, 78, 23]; love[123, 19, 2, 3];5}, Genre{hip hop[17, 92, 23, 124]; pop[3, 17, 19];6}, Platform{deezer[23, 78, 2, 9]; youtube[17, 9, 5];7}";
+
+
+
+io:println("\nLength of index file: ", indexFile.length());
+
+indexFile = indexFile.concat("     ");
+
+string restOfIndexFile = "";
+string attributeLineForManipulation = "";
+string attributeLine = "";
+string editedAttributeAndTracklist = "";
+string attributeAndTracklist = ""; 
+string newValueForAttribute = "";
+string tracklist = "";
+string updatedIndexNewValue = "";
+string updatedIndexExistingValue = "";
+string recordNumberInserted = "";
+string searchStringForIndexUpdate = "";
+string newAttributeLine = "";
+string space = "";
+string searchString = "";
+int searchStringPosition = 0;
+int searchStringPosition2 = 0;
+string[] theEdits = [];
+string[] theEdits2 = [];
+int i = 0;
+int i2 = 0;
+
+string[] attributesArray = [];
+
+string[] dates = [music2.date];
+string[] bands = [music2.band];
+string[] versions = [music2.theVersion];
+string[] recordNumbers = [music2.recordNumber];
+
+
+Artist[] theArtists = music2.artist; 
+Song[] theSongs = music2.song;
+//title, genre, platform
+
+//io:println("\n\nPassed music decomposition******************************************************");
+
+string[] titles = [];
+//0, 3, 6, 9, 12
+string[] genres = [];
+//
+string[] platforms = [];
+
+int kk = 0;
+while(kk < theSongs.length()){
+
+titles[kk] = theSongs[kk].title;
+genres[kk] = theSongs[kk].genre;
+platforms[kk] = theSongs[kk].platform;
+
+kk = kk+1;
+}
+
+
+//io:println("\n\nPassed song detail decomposition******************************************************");
+
+
+string[] artists = [];
+string[] memberships = [];
+
+int kkk = 0;
+while(kkk < theArtists.length()){
+artists[kkk] = theArtists[kkk].name;
+memberships[kkk] = theArtists[kkk].membership;
+kkk = kkk + 1;
+}
+
+//io:println("\n\nPassed artist decomposition******************************************************");
+
+//we should probably disallow certain charaters such as those used in delimiters and just getting the info out, like "{", "{", ";", "[", "]"
+string [] startDelimiters = ["Dates{", "Names{", "Member{", "Band{", "Title{", "Genre{", "Platform{"];
+string[] endDelimiters = ["1}", "2}", "3}", "4}", "5}", "6}", "7}"];
+
+//Dates{22/04/2012[2, 7, 9]; 12/11/2018[5, 17, 23];}, Names{young thug[9, 3, 123]; lil wayne[34, 78, 92]; eminem[2, 23, 9];}, Member{yes[3, 9, 17, 34, 78, 5]; no[2, 7, 9, 23, 123];}, Band{momford and sons[3, 123, 17, 78,]; young money[17, 5, 23]; shady records[2, 23, 9];}, Title{baby[7, 17, 78, 23]; love[123, 19, 2, 3, ];}, Genre{hip hop[17, 92, 23, 124]; pop[3, 17, 19];}, Platform{deezer[23, 78, 2, 9]; youtube[17, 9, 5];}
+//Dates{22/04/2012[2., 7., 9.]; 12/11/2018[5., 17., 23.];1}, Names{young thug[9., 3., 123.]; lil wayne[34., 78., 92.]; eminem[2., 23., 9.];2}, Member{yes[3., 9., 17., 34., 78., 5.]; no[2., 7., 9., 23., 123.];3}, Band{momford and sons[3., 123., 17., 78.,]; young money[17., 5., 23.]; shady records[2., 23., 9.];4}, Title{baby[7., 17., 78., 23.]; love[123., 19., 2., 3.];5}, Genre{hip hop[17., 92., 23., 124.]; pop[3., 17., 19.];6}, Platform{deezer[23., 78., 2., 9.]; youtube[17., 9., 5.];7}
+
+//REMEMBER TO CONVERT EVERYTHING TO LOWERCASE BEFORE DOING SEARCHES OR USE IGNORE CASE
+
+int counter = 0;
+
+if(!(indexFile.indexOf(recordNumbers[0]) is int)){}
+if(!(indexFile.indexOf(recordNumbers[0]) is int)){}
+
+//counter = io:readln("Attribute number: ");
+//if we specify it, we can just start with that number and just skip the ones before it... maybe put break inside to skip all
+
+int arrayCounter = 0;
+int keepHere = 0;
+
+int exitTime = 0;
+int tracker = 0;
+
+int y2 = 0;
+int sub = 0;
+
+while(counter < 7){
+
+//io:println("\n\nInside counter loop ****************************************************** ", counter);
+
+sub = sub + 1;
+
+//dates
+if(counter == 0){attributesArray = dates;}
+
+//artists: names and memberships
+if(counter == 1){attributesArray = artists;}
+if(counter == 2){attributesArray = memberships;}
+
+//band
+if(counter == 3){attributesArray = bands;}
+
+//songs: titles, genres and platforms
+if(counter == 4){attributesArray = titles;}
+if(counter == 5){attributesArray = genres;}
+if(counter == 6){attributesArray = platforms;}
+
+//record number and version number, which prolly shouldn't be here... I think this should just be that hash key
+if(counter == 7){attributesArray = versions;}
+if(counter == 8){attributesArray = recordNumbers;}
+
+//traverses given array based on length. Starts at the end by design
+arrayCounter = attributesArray.length() - sub ;
+searchString = attributesArray[arrayCounter];
+
+//for testing puroposes
+io:println("\n\nSearch string: ", searchString);
+
+//io:println("\n\nPassed searchString assignment ******************************************************\n\n");
+
+//get upper and lower bounds for an attribute like Names or Genres which is saved something like Genre{genre1[record1, record2, ], genre2[..],...}
+int|error? startIndex = indexFile.indexOf(startDelimiters[counter]);
+int|error? endIndex = indexFile.indexOf(endDelimiters[counter]);
+
+attributeLine = indexFile.substring(<int>startIndex, <int>endIndex);
+io:println("\nAttribute ", counter+1 ," line: ", attributeLine);
+
+exitTime = exitTime + 1;
+if(exitTime == 45){break;}
+//used as exit condition becuz initially loop would go on forever, couldn't 
+
+
+restOfIndexFile = indexFile.substring(<int>endIndex+4, indexFile.length());
+//io:println("\nRest of index file: ", restOfIndexFile);
+
+
+
+
+
+///if(){decider == "create"}{
+ //   searchString = ;
+ //   counter = 7;
+//}
+
+
+//this is for when the string has been found properly
+attributeLineForManipulation = attributeLine;
+
+if(  (attributeLineForManipulation.indexOf(searchString) is int)  &&  ( (<int>attributeLineForManipulation.indexOf("{")) -1 < (<int>attributeLineForManipulation.indexOf(searchString)) )   ){
+//found but not in attribute name i.e. properly
+
+//boolean g = (    (<int>attributeLineForManipulation.indexOf("{")) < (<int>attributeLineForManipulation.indexOf(searchString))   );
+//&& !(attributeLineForManipulation.indexOf("{") is int) 
+//(attributeLineForManipulation.indexOf(searchString) is int)
+
+//(attributeLineForManipulation.indexOf("{") < attributeLineForManipulation.indexOf(searchString)) 
+
+
+//io:println("\n\n Inside [string waa found somewhere] ******************************************************\n\n");
+
+searchStringPosition = <int> attributeLineForManipulation.indexOf(searchString);
+searchStringPosition2 = <int> attributeLine.indexOf(searchString);
+//int searchStringPosition3 = <int> indexFile.indexOf(searchString);
+//might need to edit this for when we are searching for tracks for updating
+
+string lineForManipulation = attributeLineForManipulation.substring(<int>attributeLineForManipulation.indexOf(searchString), attributeLineForManipulation.length());
+
+//tracklist = lineForManipulation.substring( <int>lineForManipulation.indexOf(searchString)+ searchString.length()       , <int>lineForManipulation.indexOf("]")+1);
+
+tracklist = lineForManipulation.substring( <int>lineForManipulation.indexOf("[") , <int>lineForManipulation.indexOf("]")+1);
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//io:println("\n\nInside string is definitely found correctly******************************************************\n\n");
+
+//io:println("Line for manipulation: ", lineForManipulation);
+//io:println("\nTracklist: ", tracklist);
+
+recordNumberInserted = randomNoString().concat(".0");
+//io:readln("Enter new record/track number (attribute value found): ");
+
+io:println("Record Number: ", recordNumberInserted);
+
+//"Dates{22/04/2012[2.0, 7.0, 9.0]; 12/11/2018[5.0, 17.0, 23.0];     ***1}, 
+//Names{young thug[9.0, 3.0, 123.0]; lil wayne[34.0, 78.0, 92.0]; ***eminem[2.0, 23.0, 9.0];2}, Member{yes[3.0, 9.0, 17.0, 34.0, 78.0, 5.0]; no[2.0, 7.0, 9.0, 23.0, 123.0];3}, Band{momford and sons[3.0, 123.0, 17.0, 78.0]; young money[17.0, 5.0, 23.0]; shady records[2.0, 23.0, 9.0];4}, Title{baby[7.0, 17.0, 78.0, 23.0]; love[123.0, 19.0, 2.0, 3.0];5}, Genre{hip hop[17.0, 92.0, 23.0, 124.0]; pop[3.0, 17.0, 19.0];6}, Platform{deezer[23.0, 78.0, 2.0, 9.0]; youtube[17.0, 9.0, 5.0];7}";
+
+string intermediateLine = lineForManipulation.substring(0, <int>lineForManipulation.indexOf("]"));
+string first = indexFile.substring(0, searchStringPosition-1);
+string middle1 = intermediateLine.concat(", ", recordNumberInserted, "]; " );
+//string middle2 = lineForManipulation.substring( <int>lineForManipulation.indexOf("];")+1, <int>lineForManipulation.length());
+string middle2 = lineForManipulation.substring( <int>lineForManipulation.indexOf("]")+1, <int>lineForManipulation.length());
+string last = restOfIndexFile;
+
+string secondPart = attributeLine.substring(0, searchStringPosition-1);
+
+//io:println("\nLine for manipulation: ",lineForManipulation);
+//io:println("\nFirst: ", first);   //Dates{22/04/2012[2.0, 7.0, 9.0]; 12/11/2018[5.0, 17.0, 23.0]; 2
+////io:println("\nIntermediate: ", intermediateLine);
+//io:println("\nMiddle1: ",middle1);  //eminem[2.0, 23.0, 9., 4125116];
+//io:println("\nMiddle 2:",middle2);  //;
+//io:println("\nEnd delimiter: ",endDelimiters[counter]);  //2}
+//io:println("\nLast: ", last);  //Member{yes[3.0, 9.0, 17.0, 34.0, 78.0, 5.0]; no[2.0, 7.0, 9.0, 23.0, 123.0];3}, Band{m11omford and sons[3.0, 123.0, 17.0, 78.0]; young money[17.0, 5.0, 23.0]; shady records[2.0, 23.0, 9.0];4}, Title{baby[7.0, 17.0, 78.0, 23.0]; love[123.0, 19.0, 2.0, 3.0];5}, Genre{hip hop[17.0, 92.0, 23.0, 124.0]; pop[3.0, 17.0, 19.0];6}, Platform{deezer[23.0, 78.0, 2.0, 9.0]; youtube[17.0, 9.0, 5.0];7}
+
+//fine: endDelimters, last
+
+//this for when the value already exists and you are just adding a new value to it
+updatedIndexExistingValue = first.concat(secondPart, middle1, middle2, endDelimiters[counter], ", ", last);
+//updatedIndexExistingValue = first.concat(middle1, middle2, endDelimiters[counter], ", ", last);
+theEdits[i] = updatedIndexExistingValue;
+io:println("\nThe existing edits: ", theEdits[i]);
+indexFile = updatedIndexExistingValue;
+
+i = i + 1;
+
+}
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//we should prolly add a parameter for returning tracks vs one for just updating the index
+//maybe put the part that returns the tracks in an if block and test on the parameter
+
+if(   !(attributeLineForManipulation.indexOf(searchString) is int)  ){
+//if the search string is not found at all
+
+
+//io:println("\nInside string not found at all *******************************************\n");
+recordNumberInserted = randomNoString().concat(".0");
+//io:readln("Enter new record/track number (attribute value NOT found): ");
+//the concatenation of "." at the end is for the purpose of finding 
+//initially it was just ".", but now ".0", but idk yet how this alters things
+
+searchStringForIndexUpdate = searchString;
+//this search string is really just us looping thru the values of a music json and checking if they exist and if they don't, 
+//we create a new thing for them
+
+space = " ";
+newValueForAttribute = space.concat(searchStringForIndexUpdate, "[", recordNumberInserted, "];", endDelimiters[counter]);
+newAttributeLine = attributeLine.concat(newValueForAttribute);
+updatedIndexNewValue = newAttributeLine.concat(", ", restOfIndexFile);
+
+theEdits2[i2] = updatedIndexNewValue;
+
+io:println("\nThe new edits: ", theEdits2[i2]);
+indexFile = updatedIndexNewValue;
+i2 = i2 + 1;
+}
+
+
+
+
+
+
+
+
+//io:println("\n\nCounter: ", counter);
+//io:println("Array counter: ", arrayCounter);
+
+if(arrayCounter == 0){
+//y2 = 0;
+sub = 0;
+counter = counter + 1;
+}
+
+}
+
+io:println("Original: ", originalIndexFile);
+io:println("\n\n\nfinal: ", indexFile);
+
+//display(theEdits, theEdits2, originalIndexFile);
+
+}
+
+
+
+
+public function display(string[] theEdits, string[] theEdits2, string original) {
+string[] a = theEdits;
+string[] b = theEdits2;
+string original1 = original;
+
+    io:println("\n\nOriginal: ", original1);
+    io:println("\n\nExisting end: ", a[a.length()]);
+    io:println("\n\nNew stuff end: ", b[b.length()]);
+
+}
+
+
+
+public function update(){
+
+string recNo = "";
+//recordNo;
+string verNo = "";
+//versionNo;
+
+
+recNo = io:readln("Enter record number:");
+verNo = io:readln("Enter latest version number:");
+
+int attributeCounter = 1;
+
+string[] attributes = ["Date :", "Name: ", "Member (true/false): ", "Band: ", "Title: ", "Genre: ", "Platform: "];
+io:println("Creating record... \nPlease enter values carefully. VERY carefully. No pressure. ");
+
+Artist[] artist2  = [];
+Song[] song2 = [];
+Artist[] artist1 = [{name: " ", membership: " "}];
+Song[] song0 = [{title: " ", genre: " ", platform: " "}];
+Music lovelyTune = {date: "", artist: artist1, band: "", song: song0, theVersion: "", recordNumber: "0", recordKey: "xxxx"};
+
+io:print("Date: ");
+lovelyTune.date = io:readln("");
+
+
+
+string entries = io:readln("Number of artists on this song: ");
+int|error noOfEntries1 = 'int:fromString(entries); 
+
+int i1 = 0;
+
+string[] artistlist = [];
+y = -1;
+
+
+while(i1 < (<int>noOfEntries1)){
+Artist beyonce = {name: " ", membership: " "};
+
+ io:print("\nName: ");
+ beyonce.name = io:readln("");
+ artistlist[incr(y, 1)] = beyonce.name;
+
+ io:print("Member (Yes/No): ");
+ beyonce.membership = io:readln("");
+ artistlist[incr(y, 1)] = beyonce.membership;
+ artist2[i1] = beyonce;
+
+i1 = i1 + 1;
+}
+
+lovelyTune.artist = artist2;
+
+io:print("\nBand: ");  
+lovelyTune.band = io:readln("");
+
+string entries2 = io:readln("Number of songs here: ");
+int|error noOfEntries = 'int:fromString(entries2); 
+int i2 = 0;
+string[] songlist = [];
+y = -1;
+
+
+while(i2 < (<int>noOfEntries)){
+Song song1 = {title: " ", genre: " ", platform: " "};
+
+io:print("\nTitle: ");
+song1.title = io:readln("");
+songlist[incr(y, 1)] = song1.title;
+
+io:print("Genre: ");
+song1.genre = io:readln("");
+songlist[incr(y, 1)] = song1.genre;
+
+io:print("Platform: ");
+song1.platform = io:readln("");
+songlist[incr(y, 1)] = song1.platform;
+
+song2[i2] = song1;
+
+i2 = i2 + 1;
+}
+
+lovelyTune.song = song2;
+//int songLength = song2.length();
+
+
+io:println("\n\nRecord Representation: \n\n");
+io:println(lovelyTune);
+//lovelyTune.version = 
+//updateIndex(lovelyTune);
+
+    json|error j = json.constructFrom(lovelyTune);
+    if (j is json) {
+
+        io:println("\n\nJSON Representation:\n\n");
+        io:println(j.toJsonString());
+        io:println("\n\nPres Eni Ki Tu Kontinew: \n\nArtist List: \n\n", artistlist);
+        io:println("\n\nSonglist: \n\n", songlist);
+        io:println("\n\n");
+     
+      lovelyTune.recordKey = cryptofy2(j.toJsonString());
+ 
+    }
+
+string decider = "create";
+updateIndex(lovelyTune, decider);
+
+
+
+
+}
+
+
+public function main(){
+
+io:println("Hello. Welcome to Cali! \nWhat would u like to do today? \n");
+io:println("Enter 1, 2 or 3: ");
+io:println("1. Create a new record \n2. Update a record \n3. Read a record");
+
+//initializer for the incrementer
+//gets reset in the create record if block
+//int y = -1;
+
+string choice = "0";
+//int|error variable = 'int:fromString(StringRepresentationOfVariable);
+choice = io:readln("\n: ");
+
+while(choice != "1" && choice != "2" && choice != "3" ){
+ choice = io:readln("Try again fool\n:");
+}
+
+io:println("... \n");
+
+if(choice == "1"){
+io:println("Creating record");
+y = -1;
+createRecord();
+}
+
+if(choice == "2"){
+io:println("Updating record");
+//Music gg;
+update();
+}
+
+if(choice == "3"){
+io:println("Reading record");
+///readRecord();
+}
+
+}
